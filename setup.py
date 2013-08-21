@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '0.0.5'
+version = '0.0.6'
 
 setup(
 
@@ -20,6 +20,5 @@ setup(
     #dependencies
     install_requires=['numpy >= 1.7.0',
                       'pandas >= 0.12.0',
-                      'copper >= 0.0.3'],
-    use_2to3=True
+                      'copper >= 0.0.3']
 )
