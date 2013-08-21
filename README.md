@@ -12,7 +12,7 @@ koala
 ####Installation
     $ python setup.py install
 
-####Bascis
+####Basics
 
 	from koala import Koala
 	import pandas as pd
