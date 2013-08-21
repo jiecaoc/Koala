@@ -9,6 +9,8 @@ class Koala(object):
     data = None
     classifier = None
 
+    train_kwargs = None
+
     _mc = None
 
     def __init__(self,data=None, target=None, train=False):
@@ -44,6 +46,9 @@ class Koala(object):
         return None
 
     def train(self, **kwargs):
+
+        self.train_kwargs = kwargs
+
         test_size = 0.1
         if kwargs.get('test_size') is not None:
             test_size = kwargs.get('test_size')
@@ -61,8 +66,7 @@ class Koala(object):
             predictions = self._mc.le.inverse_transform(self._mc['RFC'].predict(X))
         except AttributeError:
             predictions = self._mc['RFC'].predict(X)
-        finally:
-            return predictions
+        return predictions
 
     def accuracy_score(self):
         return self._mc.accuracy_score()[0]
@@ -85,21 +89,24 @@ class Koala(object):
     def feature_importance(self):
         rf_weights = list(self._mc['RFC'].feature_importances_)
         rf_inputs = list(self.data.filter_cols(role=self.data.INPUT))
-        return DataFrame(data={'weight':rf_weights},index=rf_inputs).sort('weight', ascending=False)
+        return DataFrame(data=rf_weights, index=rf_inputs,columns=['weight']).sort('weight', ascending=False)
 
-    def feature_reduction_scores(self, **kwargs):
+    def feature_reduction_scores(self):
+        K = 1 # to be developped more later on
+
         ordered_features = list(self.feature_importance().index)[::-1]
         ordered_features.append(self.data.filter_cols(role=self.data.TARGET)[0])
 
         idx = []
-        f1_score = []
         accuracy_score = []
 
         for i in range(len(ordered_features[:-1])):
-            kl = Koala(data=self.data.frame[ordered_features[i:]], target=self.data.filter_cols(role=self.data.TARGET)[0])
-            kl.train(**kwargs)
+            accuracy_score_i = []
             idx.append(len(ordered_features[i:])-1)
-            f1_score.append(kl.f1_score())
-            accuracy_score.append(kl.accuracy_score())
-        scores = DataFrame(data={'f1_score': f1_score}, index=idx)
+            for _ in range(K):
+                kl = Koala(data=self.data.frame[ordered_features[i:]], target=self.data.filter_cols(role=self.data.TARGET)[0])
+                kl.train(**self.train_kwargs)
+                accuracy_score_i.append(kl.accuracy_score())
+            accuracy_score.append(sum(accuracy_score_i) / len(accuracy_score_i))
+        scores = DataFrame(data={'accuracy': accuracy_score}, index=idx)
         return scores
