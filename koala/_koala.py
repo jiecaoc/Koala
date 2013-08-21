@@ -11,11 +11,13 @@ class Koala(object):
 
     _mc = None
 
-    def __init__(self,data=None, target=None):
+    def __init__(self,data=None, target=None, train=False):
         if data is not None:
             self.set_data(data)
             if target is not None:
                 self.set_target(target)
+                if train:
+                    self.train(test_size=0.1)
         return None
 
     def save(self, path):
