@@ -74,6 +74,14 @@ class KoalaTest(unittest.TestCase):
         except Exception as e:
             self.fail(str(e))
 
+    def testKoalaClassiferFeatures(self):
+        try:
+            k = koala.Koala(data=DATASET, target=4)
+            k.train()
+            fs = k.feature_importance()
+            fr = k.feature_reduction_scores()
+        except:
+            self.fail(str(e))
 
 if __name__ == "__main__":
     unittest.main()
