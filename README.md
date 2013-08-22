@@ -18,7 +18,7 @@ koala
 	import pandas as pd
 	
 	wine = pd.read_csv('../data/wine.csv')
-	kl = Koala(data=wine.drop('Magnesium', axis=1), target='Type')
+	kl = Koala(data=wine, target='Type')
 	kl.train(test_size=0.3)
 	print(kl.confusion_matrix())
 	
