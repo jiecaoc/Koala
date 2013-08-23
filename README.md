@@ -5,6 +5,7 @@ koala
 
 ####Requirements
 
+- Python 3.3+
 - NumPy
 - pandas
 - copper
