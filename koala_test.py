@@ -12,8 +12,7 @@ else:
 FILE = 'test.dat'
 PATH = os.path.join(FOLDER, FILE)
 
-DATASET = pd.read_csv('data/iris.csv', header=None).dropna()
-
+DATASET = pd.read_csv('data/iris.csv')
 
 class KoalaTest(unittest.TestCase):
 
@@ -34,11 +33,7 @@ class KoalaTest(unittest.TestCase):
         except Exception as e:
             self.fail(str(e))
 
-
     def testKoalaSaveAndLoad(self):
-
-        self.maxDiff = None
-
         try:
             k = koala.Koala()
             k.set_data(DATASET)
@@ -52,19 +47,15 @@ class KoalaTest(unittest.TestCase):
 
             self.assertEqual(k.data, l.data)
             self.assertEqual(k._mc, l._mc)
-
         except Exception as e:
             self.fail(str(e))
         else:
             os.remove(PATH)
 
-
     def testKoalaClassification(self):
         try:
             X_test = np.array([[5,3,1,0],[8,3,6,2]])
-            k = koala.Koala()
-            k.set_data(DATASET)
-            k.set_target(4)
+            k = koala.Koala(data=DATASET,target='species')
             k.train(test_size=0.4)
             predictions = k.predict(X_test)
 
@@ -76,11 +67,11 @@ class KoalaTest(unittest.TestCase):
 
     def testKoalaClassiferFeatures(self):
         try:
-            k = koala.Koala(data=DATASET, target=4)
+            k = koala.Koala(data=DATASET, target='species')
             k.train()
             fs = k.feature_importance()
             fr = k.feature_reduction_scores()
-        except:
+        except Exception as e:
             self.fail(str(e))
 
 if __name__ == "__main__":
