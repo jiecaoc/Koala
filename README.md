@@ -7,6 +7,7 @@ koala
 
 - Python 3.3+
 - NumPy
+- scikit-learn
 - pandas
 - copper
 
